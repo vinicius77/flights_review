@@ -148,7 +148,7 @@ class Airline < ApplicationRecord
     end
 
     def average_score
-        reviews.average(score).round(2).to_f
+        reviews.average(:score).round(2).to_f
     end
 
 end
@@ -225,5 +225,67 @@ airline = Airline.first
 airline.slug
 airline.reviews
 airline.reviews.count
+airline.average_score
+
+```
+
+## Building out the API
+
+Add this line to the application's <code>Gemfile</code>:
+
+```
+gem 'fast_jsonapi'
+```
+
+and installs the gem in the project
+
+```
+bundle install
+```
+
+This gem allows us creating serializers where we pass the specific attributes
+we want to expose in the API as shown below.
+
+```
+rails generate serializer Airline name image_url slug
+```
+
+The <code>/app/serializers/airline_serializer.rb</code> will be similiar to it:
+
+```ruby
+class AirlineSerializer
+  include FastJsonapi::ObjectSerializer
+  attributes :name, :image_url, :slug
+
+  # same as on Airline model
+  has_many :reviews
+end
+
+```
+
+We do the same for Reviews
+
+```
+rails generate serializer Review title description score airline_id
+```
+
+Checking the serializer
+(\* if facing <code>Rails: NameError (uninitialized constant AirlineSerializer)) </code>
+
+```
+# Exit the rails console, if you're still inside it:
+exit
+spring stop
+rails console
+
+```
+
+```
+airline = Airline.first
+AirlineSerializer.new(airline).serialized_json
+AirlineSerializer.new(airline).as_json
+```
+
+```
 
 ```
