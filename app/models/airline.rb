@@ -2,6 +2,7 @@ class Airline < ApplicationRecord
     has_many :reviews
 
     before_create :slugify
+    before_update :slugify
     #This function Slugifies the airline name and sets is to the slugify field before setting 
     #it on the database.
 

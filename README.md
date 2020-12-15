@@ -139,6 +139,7 @@ class Airline < ApplicationRecord
     has_many :reviews
 
     before_create :slugify
+    before_update :slugify
     #This function Slugifies the airline name and sets is to the slugify field before setting
     #it on the database.
 
@@ -303,5 +304,82 @@ Rails.application.routes.draw do
   end
 
   get '*path', to: 'pages#index', via: :all
+end
+```
+
+## Controllers
+
+Creating the pages controller on <code>/controllers/pages_controller.rb</code> directory.
+
+```ruby
+
+class PagesController < ApplicationController
+def index
+
+    end
+end
+
+```
+
+Creating the airlines controller on <code>/controllers/api/v1/airlines_controller.rb</code> directory.
+
+```ruby
+module Api
+  module V1
+		class AirlinesController < ApplicationController
+			def index
+				airlines = Airline.all
+
+				render json: AirlineSerializer.new(airlines, options).serialized_json
+			end
+
+			def show
+				airline = Airline.find_by(slug: params[:slug])
+
+				render json: AirlineSerializer.new(airline, options).serialized_json
+			end
+
+			def create
+				airline = Airline.new(airline_params)
+
+				if airline.save
+					render json: AirlineSerializer.new(airline).serialized_json
+				else
+					render json: {error: airline.errors.message}, status: 422
+				end
+			end
+
+			def update
+				airline = Airline.find_by(slug: params[:slug])
+
+				if airline.update(airline_params)
+					render json: AirlineSerializer.new(airline, options).serialized_json
+				else
+					render json: {error: airline.errors.message}, status: 422
+				end
+			end
+
+			def destroy
+				airline = Airline.find_by(slug: params[:slug])
+
+				if airline.destroy
+					head :no_content
+				else
+					render json: {error: airline.errors.message}, status: 422
+				end
+			end
+
+			private
+			def airline_params
+				params.require(:airline).permit(:name, :image_url)
+			end
+
+			def options
+				# @options is an instance variable and is available to all methods within the class.
+				@options ||= { include: %i[reviews]}
+			end
+
+		end
+  end
 end
 ```
