@@ -88,3 +88,69 @@ Creating the database:
 ```
 rails db:create
 ```
+
+## Creating Models (Airline and Review)
+
+Airline Model:
+
+```
+rails generate model Airline name:string image_url:string slug:string
+```
+
+Review Model:
+
+```
+rails generate model Review title:string description:string score:integer airline:belongs_to
+```
+
+The models are created on <code>/app/models/airline.rb</code> and <code>/app/models/review.rb</code>.
+
+An also are created their respective migrations on <code>/db/migrate</code> directory.
+
+**CreateReviews** migration example:
+
+```ruby
+class CreateReviews < ActiveRecord::Migration[6.0]
+  def change
+    create_table :reviews do |t|
+      t.string :title
+      t.string :description
+      t.integer :score
+      t.belongs_to :airline, null: false, foreign_key: true
+
+      t.timestamps
+    end
+  end
+end
+```
+
+## Creating a new schema from the migrations
+
+```
+rails db:migrate
+```
+
+The schema is created inside of the <code>/db/migrate/schema.rb</code> file.
+
+## Setting the airline.rb model
+
+```ruby
+class Airline < ApplicationRecord
+    has_many :reviews
+
+    before_create: slugify
+    #This function Slugifies the airline name and sets is to the slugify field before setting
+    #it on the database.
+
+    #slugifying == "Qantas Airlines".parameterize => qantas-airlines.
+    def slugify
+        self.slug = name.parameterize
+    end
+
+    def average_score
+        reviews.average(score).round(2).to_f
+    end
+
+end
+
+```
