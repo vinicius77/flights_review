@@ -31,7 +31,7 @@ git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 exec $SHELL
 
-rbenv install 2.7.2
+rbenv install --verbose 2.7.2
 rbenv global 2.7.2
 ruby -v
 ```
@@ -56,24 +56,35 @@ Making Rails executable with <code>rbenv</code>
 rbenv rehash
 ```
 
-## Setting Up Postgresql
+## Setting Up [Postgresql](https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-ruby-on-rails-application-on-ubuntu-18-04)
 
 ```
-sudo apt install postgresql-12 libpq-dev
+sudo apt install postgresql postgresql-contrib libpq-dev
 ```
 
 Creating a user with permission to create databases:
 
 ```
-sudo -u postgres createuser vinicius -s
+sudo -u postgres createuser kako77sub -s
 
 # If you want to set a password for the user, you can do the following
 sudo -u postgres psql
-postgres= # \password admin123
+postgres= # \password kako77sub
+
+# Enter new password:
+# Enter it again:
+
+postgres=# \q
 ```
 
 Script that created this project:
 
 ```
 rails new open-flights --webpack=react --database=postgresql -T
+```
+
+Creating the database:
+
+```
+rails db:create
 ```
