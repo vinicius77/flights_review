@@ -1,7 +1,7 @@
 class Airline < ApplicationRecord
     has_many :reviews
 
-    before_create: slugify
+    before_create :slugify
     #This function Slugifies the airline name and sets is to the slugify field before setting 
     #it on the database.
 
@@ -11,7 +11,7 @@ class Airline < ApplicationRecord
     end
 
     def average_score
-        reviews.average(score).round(2).to_f
+        reviews.average(:score).round(2).to_f 
     end
     
 end

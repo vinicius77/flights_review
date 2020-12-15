@@ -138,7 +138,7 @@ The schema is created inside of the <code>/db/migrate/schema.rb</code> file.
 class Airline < ApplicationRecord
     has_many :reviews
 
-    before_create: slugify
+    before_create :slugify
     #This function Slugifies the airline name and sets is to the slugify field before setting
     #it on the database.
 
@@ -152,5 +152,78 @@ class Airline < ApplicationRecord
     end
 
 end
+
+```
+
+## Populating the <code>/db/seed.rb</code> file in order to insert mock data in the database
+
+```ruby
+airlines = Airline.create([
+    {
+      name: "United Airlines",
+      image_url: "https://open-flights.s3.amazonaws.com/United-Airlines.png"
+    },
+    {
+      name: "Southwest",
+      image_url: "https://open-flights.s3.amazonaws.com/Southwest-Airlines.png"
+    },
+    {
+      name: "Delta",
+      image_url: "https://open-flights.s3.amazonaws.com/Delta.png"
+    },
+    {
+      name: "Alaska Airlines",
+      image_url: "https://open-flights.s3.amazonaws.com/Alaska-Airlines.png"
+    },
+    {
+      name: "JetBlue",
+      image_url: "https://open-flights.s3.amazonaws.com/JetBlue.png"
+    },
+    {
+      name: "American Airlines",
+      image_url: "https://open-flights.s3.amazonaws.com/American-Airlines.png"
+    }
+  ])
+
+  reviews = Review.create([
+    {
+        title: "Great Airline",
+        description: "Such a Nice Time",
+        score: 5,
+        airline: airlines.first
+    },
+    {
+        title: "Average Experience",
+        description: "Nothing special. Just normal.",
+        score: 3,
+        airline: airlines.first
+    },
+    {
+        title: "Awful experience",
+        description: "Bad times I could say",
+        score: 1,
+        airline: airlines.first
+    }
+])
+```
+
+```
+rails db:seed
+```
+
+You can check if the data was inserted successfuly on the database using the rails console.
+
+```
+rails console
+
+Airline.first
+Airline.count
+
+Review.count
+
+airline = Airline.first
+airline.slug
+airline.reviews
+airline.reviews.count
 
 ```
