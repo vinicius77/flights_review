@@ -1,24 +1,79 @@
-# README
+# Open Flights README
 
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
 Things you may want to cover:
 
-- Ruby version
+## Installing Ruby
 
-- System dependencies
+The recommended version for this project is Ruby 2.7.2
 
-- Configuration
+```
+sudo apt install curl
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 
-- Database creation
+sudo apt-get update
+sudo apt-get install git-core zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev nodejs yarn
+```
 
-- Database initialization
+## Installing Rbenv
 
-- How to run the test suite
+```
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+exec $SHELL
 
-- Services (job queues, cache servers, search engines, etc.)
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
+exec $SHELL
 
-- Deployment instructions
+rbenv install 2.7.2
+rbenv global 2.7.2
+ruby -v
+```
 
-- ...
+## Installing bundler
+
+```
+gem install bundler
+```
+
+## Installing Ruby
+
+The recommended version for this project is Rails 6.0.3.4
+
+```
+gem install rails -v 6.0.3.4
+```
+
+Making Rails executable with <code>rbenv</code>
+
+```
+rbenv rehash
+```
+
+## Setting Up Postgresql
+
+```
+sudo apt install postgresql-12 libpq-dev
+```
+
+Creating a user with permission to create databases:
+
+```
+sudo -u postgres createuser vinicius -s
+
+# If you want to set a password for the user, you can do the following
+sudo -u postgres psql
+postgres= # \password admin123
+```
+
+Script that created this project:
+
+```
+rails new open-flights --webpack=react --database=postgresql -T
+```
