@@ -429,3 +429,27 @@ module Api
 	end
 end
 ```
+
+## Making API Calls
+
+To check all the routes from the application
+
+```
+rails routes
+```
+
+(I have got some errors so this is how I solved them)
+
+```
+# warning Integrity check: System parameters don't match
+# error Integrity check failed
+# error Found 1 errors.
+
+
+#========================================
+#  Your Yarn packages are out of date!
+#  Please run `yarn install --check-files` to update.
+#========================================
+
+yarn install --check-files
+```
