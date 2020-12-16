@@ -278,7 +278,6 @@ Checking the serializer
 exit
 spring stop
 rails console
-
 ```
 
 ```
@@ -300,7 +299,6 @@ Rails.application.routes.draw do
       resources :airlines, param: :slug
       resources :reviews, :only [:create, :destroy]
     end
-
   end
 
   get '*path', to: 'pages#index', via: :all
@@ -309,19 +307,19 @@ end
 
 ## Controllers
 
-Creating the pages controller on <code>/controllers/pages_controller.rb</code> directory.
+Creating the pages controller on <code>app/controllers/pages_controller.rb</code> directory.
 
 ```ruby
 
 class PagesController < ApplicationController
-def index
+  def index
 
-    end
+  end
 end
 
 ```
 
-Creating the airlines controller on <code>/controllers/api/v1/airlines_controller.rb</code> directory.
+Creating the airlines controller on <code>app/controllers/api/v1/airlines_controller.rb</code> directory.
 
 ```ruby
 module Api
@@ -375,11 +373,59 @@ module Api
 			end
 
 			def options
-				# @options is an instance variable and is available to all methods within the class.
+        # @options is an instance variable and is available to all methods within the class.
+
+        # %i[ ] Non-interpolated Array of symbols, separated by whitespace
+        # %I[ ] Interpolated Array of symbols, separated by whitespace
+
+        # %i[ test ]
+        # => [:test]
+        # str = "other"
+        # %I[ test_#{str} ]
+        # => [:test_other]
 				@options ||= { include: %i[reviews]}
 			end
 
 		end
   end
+end
+```
+
+Creating the reviews controller on <code>app/controllers/api/v1/reviews_controller.rb</code> directory.
+
+```ruby
+module Api
+	module V1
+		class ReviewsController < ApplicationController
+
+			def create
+				review = Review.new(review_params)
+
+				if review.save
+					render json: ReviewSerializer.new(review).serialized_json
+				else
+					render json: { error: review.errors.messages }. status: 422
+			end
+
+			def destroy
+				# The find method is usually used to retrieve a row by ID:
+				# The find_by is used as a helper when you're searching for information within a column
+				review = Review.find(params[:id])
+
+        if review.destroy
+        # head :no_content seems to create a HTTP response 200 (success) with an empty body,
+        # returning this response header
+					head :no_content
+				else
+					render json: { error: review.errors.messages }, status: 422
+				end
+			end
+
+			private
+			def review_params
+				params.require(:review).permit(:title, :description, :score, :airline_id)
+			end
+		end
+	end
 end
 ```
