@@ -1,0 +1,9 @@
+POST http://localhost:3000/api/v1/reviews
+Content-type: application/json 
+
+{
+    "title": "The flight was pretty good!",
+    "description": "Happy with my trip in general",
+    "score": 4,
+    "airline_id": 1
+}

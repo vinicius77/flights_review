@@ -1,0 +1,2 @@
+DELETE http://localhost:3000/api/v1/reviews/4
+Content-type: application/json 

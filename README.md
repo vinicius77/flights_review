@@ -432,7 +432,7 @@ end
 
 ## Making API Calls
 
-To check all the routes from the application
+To check all the routes from the application:
 
 ```
 rails routes
@@ -452,4 +452,74 @@ rails routes
 #========================================
 
 yarn install --check-files
+```
+
+Starting the server
+
+```
+rails server
+```
+
+### Creating the API request files inside of `requests` directory
+
+Create the `get_all_airlines.rest`
+
+```
+GET http://localhost:3000/api/v1/airlines
+Content-type: application/json
+```
+
+Create the `get_airline.rest` (It uses the slug as a parameter)
+
+```
+GET http://localhost:3000/api/v1/airlines/american-airlines
+Content-type: application/json
+```
+
+Create the `create_airline.rest`
+
+```
+POST http://localhost:3000/api/v1/airlines
+Content-type: application/json
+
+{
+    "name": "Vinicius Airlines",
+    "image_url": "https://open-flights.s3.amazonaws.com/Avianca.png"
+}
+```
+
+This Post request will throw the error `ActionController::InvalidAuthenticityToken (ActionController::InvalidAuthenticityToken):` since Rails doesn't allow sending Post request to the controllers without a valid certification token, given its built-in default protection.
+
+As a temporary fixing we should include `protect_from_forgery with: :null_session` in both the `app/controllers/api/v1/airlines_controller.rb` and `app/controllers/api/v1/reviews_controller.rb` files as following:
+
+```ruby
+module Api
+  module V1
+    class AirlinesController < ApplicationController
+      protect_from_forgery with: :null_session
+
+      # ...
+```
+
+```ruby
+module Api
+  module V1
+    class ReviewsController < ApplicationController
+      protect_from_forgery with: :null_session
+
+      # ...
+```
+
+Create the `create_review.rest`
+
+```
+POST http://localhost:3000/api/v1/reviews
+Content-type: application/json
+
+{
+    "title": "The flight was pretty good!",
+    "description": "Happy with my trip in general",
+    "score": 4,
+    "airline_id": 1
+}
 ```

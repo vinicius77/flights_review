@@ -1,0 +1,7 @@
+POST http://localhost:3000/api/v1/airlines
+Content-type: application/json 
+
+{
+    "name": "Vinicius Airlines",
+    "image_url": "https://open-flights.s3.amazonaws.com/Avianca.png"
+}

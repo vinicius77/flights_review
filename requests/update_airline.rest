@@ -1,0 +1,7 @@
+PATCH http://localhost:3000/api/v1/airlines/vinicius-airlines
+Content-type: application/json 
+
+{
+    "name": "Kako Airlines",
+    "image_url": "https://open-flights.s3.amazonaws.com/Gol.png"
+}
