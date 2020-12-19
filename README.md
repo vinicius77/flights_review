@@ -624,3 +624,88 @@ const Airlines = () => {
 
 export default Airlines;
 ```
+
+### Airlines Component
+
+In order to make API calls to the backend we will use the `axios` library.
+
+```
+yarn add axios
+```
+
+Now the `Airlines` component should look like this:
+
+```javascript
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const Airlines = () => {
+  const [state, setState] = useState({
+    loading: false,
+    error: null,
+    airlines: null,
+  });
+
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+    const cancelToken = source.token;
+    setState({
+      loading: true,
+      error: null,
+      airlines: null,
+    });
+    axios
+      .get('/api/v1/airlines/', {
+        cancelToken,
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then((response) => {
+        console.log(response.data.data);
+        setState({
+          loading: false,
+          error: null,
+          airlines: response.data.data,
+        });
+      })
+      .catch((error) => {
+        if (axios.isCancel(error)) {
+          setState({
+            loading: false,
+            error: error.message,
+            airlines: null,
+          });
+        }
+      });
+
+    return () => source.cancel();
+  }, [setState]);
+
+  if (state.loading) {
+    return <div>Loading</div>;
+  }
+
+  if (state.error) {
+    return <div>{error} :(</div>;
+  }
+
+  if (!state.airlines && !state.loading) {
+    return <div>No Airlines Available</div>;
+  }
+
+  return (
+    <div>
+      {state.airlines && (
+        <ul>
+          {state.airlines.map((airline) => (
+            <li key={airline.attributes.name}>{airline.attributes.name}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export default Airlines;
+```
+
+In short, inside of the `useEffect` before making the `GET` request, we set our `state` to `loading: true`. When GET request is made it returns a Promise where either the `useState` sets the new state of the application into the `airlines` key if successfuly or the error if failed.
