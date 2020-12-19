@@ -319,7 +319,7 @@ end
 
 ```
 
-Creating the airlines controller on <code>app/controllers/api/v1/airlines_controller.rb</code> directory.
+### Creating the airlines controller on <code>app/controllers/api/v1/airlines_controller.rb</code> directory.
 
 ```ruby
 module Api
@@ -391,7 +391,7 @@ module Api
 end
 ```
 
-Creating the reviews controller on <code>app/controllers/api/v1/reviews_controller.rb</code> directory.
+### Creating the reviews controller on <code>app/controllers/api/v1/reviews_controller.rb</code> directory.
 
 ```ruby
 module Api
@@ -522,4 +522,105 @@ Content-type: application/json
     "score": 4,
     "airline_id": 1
 }
+```
+
+## React (Frontend Initial Settings)
+
+React and Webpack were already set when creating the project (see line :83) and the Javascript is placed on `app/javascript/packs...` directory.
+
+In order to set React as the view layer of the application is necessary to add the **Javascript pack tag** into the views.
+
+In `app/views/layouts/` directory, it is create new folder `pages` and a file `index.html.erb`. It refers the root path created previously on line 293 (<code>root 'pages#index'</code>).
+
+So, our file on `app/views/layouts/pages/index.html.erb` will be as following:
+
+```ruby
+  <%= javascript_pack_tag 'hello_react' %>
+```
+
+Now if we run the command `rails server` in the terminal, we should see the React component rendering on `http://localhost:3000/`.
+
+Just for sake of best practices we will rename the `hello_react.jsx` file from `app/javascript/packs/` to `index.jsx` and also update the Java script tag to `<%= javascript_pack_tag 'index' %>`
+
+### Creating the Components
+
+Under the `app/javascript/` directory, we will create the `components` folder and the `App.jsx` component that will hold the following content initially:
+
+```javascript
+import React from 'react';
+
+const App = () => {
+  return <div>App JS Component</div>;
+};
+
+export default App;
+```
+
+And also import our component and cleaning up the `index.jsx` to look like this:
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from '../components/App.jsx';
+
+document.addEventListener('DOMContentLoaded', () => {
+  ReactDOM.render(
+    <App />,
+    document.body.appendChild(document.createElement('div'))
+  );
+});
+```
+
+### Defining a set of navigation components and establising routes using React Routes
+
+Run the code on the terminal `yarn add react-router-dom`.
+
+Now we adapt the `App` component to use React Routes and also create both `Airline` and `Airlines` components, responsible to render an individual airline and all airlines respectively.
+
+The `App.jsx`:
+
+```javascript
+import React from 'react';
+import Airlines from '../components/Airlines.jsx';
+import Airline from '../components/Airline.jsx';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
+const App = () => {
+  return (
+    <React.Fragment>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={Airlines} />
+          <Route exact path="/airlines/:slug" component={Airline} />
+        </Switch>
+      </Router>
+    </React.Fragment>
+  );
+};
+
+export default App;
+```
+
+The initial content of `Airline.jsx` component, responsible for render an individual airline:
+
+```javascript
+import React from 'react';
+
+const Airline = () => {
+  return <div>Individual Airline</div>;
+};
+
+export default Airline;
+```
+
+The initial content of `Airlines.jsx` component, responsible for render all airlines:
+
+```javascript
+import React from 'react';
+
+const Airlines = () => {
+  return <div>ALL Airlines</div>;
+};
+
+export default Airlines;
 ```
