@@ -1,6 +1,6 @@
 import React from 'react';
-import Airlines from '../components/Airlines.jsx';
-import Airline from '../components/Airline.jsx';
+import Airlines from './Airlines.jsx';
+import ViewAirline from './ViewAirline';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 const App = () => {
@@ -9,7 +9,7 @@ const App = () => {
       <Router>
         <Switch>
           <Route exact path="/" component={Airlines} />
-          <Route exact path="/airlines/:slug" component={Airline} />
+          <Route exact path="/airlines/:slug" component={ViewAirline} />
         </Switch>
       </Router>
     </React.Fragment>

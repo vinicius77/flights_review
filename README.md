@@ -149,6 +149,7 @@ class Airline < ApplicationRecord
     end
 
     def average_score
+        return 0 unless reviews.count.positive?
         reviews.average(:score).round(2).to_f
     end
 
@@ -256,7 +257,7 @@ The <code>/app/serializers/airline_serializer.rb</code> will be similiar to it:
 ```ruby
 class AirlineSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :name, :image_url, :slug
+  attributes :name, :image_url, :slug, :average_score
 
   # same as on Airline model
   has_many :reviews
@@ -575,14 +576,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 Run the code on the terminal `yarn add react-router-dom`.
 
-Now we adapt the `App` component to use React Routes and also create both `Airline` and `Airlines` components, responsible to render an individual airline and all airlines respectively.
+Now we adapt the `App` component to use React Routes and also create both `ViewAirline` and `Airlines` components, responsible to render an individual airline and all airlines respectively.
 
 The `App.jsx`:
 
 ```javascript
 import React from 'react';
 import Airlines from '../components/Airlines.jsx';
-import Airline from '../components/Airline.jsx';
+import ViewAirline from '../components/ViewAirline.jsx';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 const App = () => {
@@ -591,7 +592,7 @@ const App = () => {
       <Router>
         <Switch>
           <Route exact path="/" component={Airlines} />
-          <Route exact path="/airlines/:slug" component={Airline} />
+          <Route exact path="/airlines/:slug" component={ViewAirline} />
         </Switch>
       </Router>
     </React.Fragment>
@@ -601,16 +602,17 @@ const App = () => {
 export default App;
 ```
 
-The initial content of `Airline.jsx` component, responsible for render an individual airline:
+The initial content of `ViewAirline.jsx` component, responsible for render an individual airline:
+**Note:** Don't confuse this component with the `Airline.jsx` we will create later. `ViewAirline.jsx` makes an API call to the backend in order to render an individual airlines and the `Airline.jsx` only renders the state already fetched from the `Airlines.jsx` parent component.
 
 ```javascript
 import React from 'react';
 
-const Airline = () => {
+const ViewAirline = () => {
   return <div>Individual Airline</div>;
 };
 
-export default Airline;
+export default ViewAirline;
 ```
 
 The initial content of `Airlines.jsx` component, responsible for render all airlines:
@@ -694,6 +696,8 @@ const Airlines = () => {
 
   return (
     <div>
+      <h1>Airlines Rate</h1>
+      <h2>All the airline reviews in just one place</h2>
       {state.airlines && (
         <ul>
           {state.airlines.map((airline) => (
@@ -709,3 +713,53 @@ export default Airlines;
 ```
 
 In short, inside of the `useEffect` before making the `GET` request, we set our `state` to `loading: true`. When GET request is made it returns a Promise where either the `useState` sets the new state of the application into the `airlines` key if successfuly or the error if failed.
+
+### Preparing the Airline Component to render individual airlines
+
+This Component will receive data as props from the parent component (`Airlines.jsx`) and render each airline individually.
+
+```javascript
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+
+const Airline = ({ attributes }) => {
+  return (
+    <div>
+      <img src={attributes.image_url} alt={attributes.name} />
+      <p>Name: {attributes.name}</p>
+      <p>Score: {attributes.average_score}</p>
+      <NavLink to={`/airlines/${attributes.slug}`}>View Airline</NavLink>
+    </div>
+  );
+};
+
+export default Airline;
+```
+
+Importing and using the `Airline` component in the `Airlines.jsx`:
+
+```javascript
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Airline from '../components/Airline';
+
+const Airlines = () => {
+  // ...
+
+  return (
+    // ...
+    {state.airlines && (
+        <ul>
+          {state.airlines.map((airline) => (
+            <li key={airline.attributes.name}>
+              <Airline attributes={airline.attributes} />
+            </li>
+          ))}
+        </ul>
+      )}
+  )
+
+  //...
+}
+
+```

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Airline from '../components/Airline';
 import axios from 'axios';
 
 const Airlines = () => {
@@ -22,7 +23,6 @@ const Airlines = () => {
         headers: { 'Content-Type': 'application/json' },
       })
       .then((response) => {
-        console.log(response.data.data);
         setState({
           loading: false,
           error: null,
@@ -56,10 +56,14 @@ const Airlines = () => {
 
   return (
     <div>
+      <h1>Airlines Rate</h1>
+      <h2>All the airline reviews in just one place</h2>
       {state.airlines && (
         <ul>
           {state.airlines.map((airline) => (
-            <li key={airline.attributes.name}>{airline.attributes.name}</li>
+            <li key={airline.attributes.name}>
+              <Airline attributes={airline.attributes} />
+            </li>
           ))}
         </ul>
       )}
