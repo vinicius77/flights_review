@@ -311,13 +311,11 @@ end
 Creating the pages controller on <code>app/controllers/pages_controller.rb</code> directory.
 
 ```ruby
-
 class PagesController < ApplicationController
   def index
 
   end
 end
-
 ```
 
 ### Creating the airlines controller on <code>app/controllers/api/v1/airlines_controller.rb</code> directory.
@@ -326,21 +324,19 @@ end
 module Api
   module V1
 		class AirlinesController < ApplicationController
+
 			def index
 				airlines = Airline.all
-
 				render json: AirlineSerializer.new(airlines, options).serialized_json
 			end
 
 			def show
 				airline = Airline.find_by(slug: params[:slug])
-
 				render json: AirlineSerializer.new(airline, options).serialized_json
 			end
 
 			def create
 				airline = Airline.new(airline_params)
-
 				if airline.save
 					render json: AirlineSerializer.new(airline).serialized_json
 				else
@@ -350,7 +346,6 @@ module Api
 
 			def update
 				airline = Airline.find_by(slug: params[:slug])
-
 				if airline.update(airline_params)
 					render json: AirlineSerializer.new(airline, options).serialized_json
 				else
@@ -360,7 +355,6 @@ module Api
 
 			def destroy
 				airline = Airline.find_by(slug: params[:slug])
-
 				if airline.destroy
 					head :no_content
 				else
@@ -375,10 +369,8 @@ module Api
 
 			def options
         # @options is an instance variable and is available to all methods within the class.
-
         # %i[ ] Non-interpolated Array of symbols, separated by whitespace
         # %I[ ] Interpolated Array of symbols, separated by whitespace
-
         # %i[ test ]
         # => [:test]
         # str = "other"
@@ -761,5 +753,62 @@ const Airlines = () => {
 
   //...
 }
+```
+
+### Disabling `turbolinks` in the application
+
+The turbolinks tags cause a stranger behaviour when listenning the click in the "back arrow" on the browser. As a workaround, remove all the `'data-turbolinks-track': 'reload'` tags from:
+
+The `app/views/layouts/application.html.erb` should be like this:
+
+```ruby
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OpenFlights</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_pack_tag 'application' %>
+  </head>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>
+```
+
+Also remove (or comment) both the import `require("turbolinks").start()` in the `app/javascript/packs/application.js` file ...
+
+```javascript
+require('@rails/ujs').start();
+// require("turbolinks").start()
+require('@rails/activestorage').start();
+require('channels');
+```
+
+... and the `gem "turbolinks"` on the `/Gemfile` file.
+
+```ruby
+# ...
+gem 'webpacker', '~> 4.0'
+# gem 'turbolinks', '~> 5'
+gem 'jbuilder', '~> 2.7'
+#...
+```
+
+To apply the changes, kill the server, re install the dependencies and restart the server.
 
 ```
+CTRL + C
+bundle install
+rails server
+```
+
+If wish, in a separated terminal (at project root folder ofc), start the `webpack-dev-server`:
+
+```
+./bin/webpack-dev-server
+```
+
+## Fast Styling The Airline views
