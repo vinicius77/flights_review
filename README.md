@@ -812,3 +812,5 @@ If wish, in a separated terminal (at project root folder ofc), start the `webpac
 ```
 
 ## Fast Styling The Airline views
+
+Not going into details in this part but the CSS file that holds all the source code is place at `app/javascript/components/App.css` and it is imported in the `App.jsx` file. Also extra some HTML elements, for example divs, are added in the components to follow the styling.

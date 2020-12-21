@@ -55,19 +55,21 @@ const Airlines = () => {
   }
 
   return (
-    <div>
-      <h1>Airlines Rate</h1>
-      <h2>All the airline reviews in just one place</h2>
-      {state.airlines && (
-        <ul>
-          {state.airlines.map((airline) => (
-            <li key={airline.attributes.name}>
-              <Airline attributes={airline.attributes} />
-            </li>
+    <section className="airlines">
+      <div className="header">
+        <h1>Airlines Rate</h1>
+        <h2>All the airline reviews in just one place</h2>
+      </div>
+      <div className="grid-content">
+        {state.airlines &&
+          state.airlines.map((airline) => (
+            <Airline
+              key={airline.attributes.name}
+              attributes={airline.attributes}
+            />
           ))}
-        </ul>
-      )}
-    </div>
+      </div>
+    </section>
   );
 };
 

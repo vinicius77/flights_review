@@ -2,6 +2,7 @@ import React from 'react';
 import Airlines from './Airlines.jsx';
 import ViewAirline from './ViewAirline';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import './App.css';
 
 const App = () => {
   return (
