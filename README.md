@@ -814,3 +814,76 @@ If wish, in a separated terminal (at project root folder ofc), start the `webpac
 ## Fast Styling The Airline views
 
 Not going into details in this part but the CSS file that holds all the source code is place at `app/javascript/components/App.css` and it is imported in the `App.jsx` file. Also extra some HTML elements, for example divs, are added in the components to follow the styling.
+
+## Creating the component that will hold the airline information originated from the backend
+
+There is a new folder in the `app/javascript/components` called `individualAirline` where the `ViewAirline` component will fetch the individual airline data based in the props received on it and render it along with its respective reviews. Initially it will look like this:
+
+```javascript
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import AirlinesHeader from './AirlinesHeader';
+
+const ViewAirline = (props) => {
+  const [state, setState] = useState({
+    loading: false,
+    error: null,
+    data: null,
+  });
+
+  useEffect(() => {
+    const slug = props.match.params.slug;
+    const url = `/api/v1/airlines/${slug}`;
+    // Axios Cancel Token settings
+    const source = axios.CancelToken.source();
+    const cancelToken = source.token;
+
+    setState({
+      loading: true,
+      error: null,
+      data: null,
+    });
+
+    axios
+      .get(url, {
+        headers: { 'Content-type': 'application/json' },
+        cancelToken,
+      })
+      .then(({ data }) => {
+        setState({
+          loading: false,
+          error: null,
+          data,
+        });
+      })
+      .catch(({ message }) => {
+        if (axios.isCancel(message)) {
+          setState({
+            loading: false,
+            error: message,
+            data: null,
+          });
+        }
+      });
+
+    return () => source.cancel;
+  }, [setState]);
+
+  return (
+    <div>
+      {state.error && <div>{state.error}</div>}
+      {state.loading && <div>{state.loading}</div>}
+      {state.data && (
+        <AirlinesHeader
+          attributes={state.data.data.attributes}
+          reviews={state.data.included}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ViewAirline;
+```
+
+The `JSX` structure will differ a little bit after styling it but the logic inside of the component will remain the same.

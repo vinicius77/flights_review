@@ -91,3 +91,55 @@ section {
   width: 100%;
   padding: 20px;
 }
+
+/* ====================================
+
+  individualAirline Directory Styling 
+
+** ====================================*/
+
+.view-info-container {
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.view-info-container .column {
+  height: 100vh;
+  overflow: scroll;
+}
+
+.view-info-container .right-column {
+  background-color: white;
+  padding-left: 50px;
+}
+
+.view-info-container .left-column {
+  background-color: var(--light-grey);
+}
+
+/** Header Component*/
+
+.header-container {
+  padding: 50px 100px 50px 0;
+  font-size: 30px;
+}
+
+.header-container img {
+  height: 60px;
+  width: 60px;
+  border-radius: 100%;
+  border: 1px solid rgb(0, 0, 0, 0.1);
+  margin-bottom: -8px;
+}
+
+.header-container .total-reviews,
+.header-container .total-score {
+  font-size: 27px;
+  padding: 10px 0;
+}
+
+.header-container .total-score {
+  font-weight: bold;
+}

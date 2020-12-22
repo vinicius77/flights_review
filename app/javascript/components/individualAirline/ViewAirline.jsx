@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import AilinesHeader from './AirlinesHeader';
 import axios from 'axios';
 import AirlinesHeader from './AirlinesHeader';
 
@@ -49,15 +48,21 @@ const ViewAirline = (props) => {
   }, [setState]);
 
   return (
-    <div>
+    <div className="view-info-container">
       {state.error && <div>{state.error}</div>}
       {state.loading && <div>{state.loading}</div>}
-      {state.data && (
-        <AirlinesHeader
-          attributes={state.data.data.attributes}
-          reviews={state.data.included}
-        />
-      )}
+      <div className="column right-column">
+        {state.data && (
+          <AirlinesHeader
+            attributes={state.data.data.attributes}
+            reviews={state.data.included}
+          />
+        )}
+        <div className="reviews"></div>
+      </div>
+      <div className="column left-column">
+        <div className="review-form">FORM</div>
+      </div>
     </div>
   );
 };
