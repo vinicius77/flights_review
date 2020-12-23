@@ -11,7 +11,7 @@ const ReviewForm = (props) => {
           <input
             type="text"
             name="title"
-            value={props.review.title || ''}
+            value={props.review.title}
             placeholder="Review Title"
             onChange={(event) => props.onChangeHandler(event)}
           />
@@ -20,7 +20,7 @@ const ReviewForm = (props) => {
           <input
             type="text"
             name="description"
-            value={props.review.description || ''}
+            value={props.review.description}
             placeholder="Review Description"
             onChange={(event) => props.onChangeHandler(event)}
           />

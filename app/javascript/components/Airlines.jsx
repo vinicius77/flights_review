@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Airline from '../components/Airline';
 import axios from 'axios';
+import airlineService from '../services/airlines';
 
 const Airlines = () => {
   const [state, setState] = useState({
@@ -17,11 +18,9 @@ const Airlines = () => {
       error: null,
       airlines: null,
     });
-    axios
-      .get('/api/v1/airlines/', {
-        cancelToken,
-        headers: { 'Content-Type': 'application/json' },
-      })
+
+    airlineService
+      .getAllAirlines(cancelToken)
       .then((response) => {
         setState({
           loading: false,

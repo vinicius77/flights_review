@@ -10,7 +10,11 @@ const ViewAirline = (props) => {
     airline: null,
   });
 
-  const [review, setReview] = useState({ title: '', description: '' });
+  const [review, setReview] = useState({
+    title: '',
+    description: '',
+    airline_id: '',
+  });
 
   const onChangeHandler = ({ target }) => {
     setReview({ ...review, [target.name]: target.value });

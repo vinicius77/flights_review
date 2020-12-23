@@ -828,7 +828,7 @@ const ViewAirline = (props) => {
   const [state, setState] = useState({
     loading: false,
     error: null,
-    data: null,
+    airlines: null,
   });
 
   useEffect(() => {
@@ -841,7 +841,7 @@ const ViewAirline = (props) => {
     setState({
       loading: true,
       error: null,
-      data: null,
+      airlines: null,
     });
 
     axios
@@ -853,7 +853,7 @@ const ViewAirline = (props) => {
         setState({
           loading: false,
           error: null,
-          data,
+          airlines,
         });
       })
       .catch(({ message }) => {
@@ -861,7 +861,7 @@ const ViewAirline = (props) => {
           setState({
             loading: false,
             error: message,
-            data: null,
+            airlines: null,
           });
         }
       });
@@ -873,10 +873,10 @@ const ViewAirline = (props) => {
     <div>
       {state.error && <div>{state.error}</div>}
       {state.loading && <div>{state.loading}</div>}
-      {state.data && (
+      {state.airlines && (
         <AirlinesHeader
-          attributes={state.data.data.attributes}
-          reviews={state.data.included}
+          attributes={state.airlines.data.attributes}
+          reviews={state.airlines.included}
         />
       )}
     </div>
@@ -887,3 +887,207 @@ export default ViewAirline;
 ```
 
 The `JSX` structure will differ a little bit after styling it but the logic inside of the component will remain the same.
+
+## Creating The Initial Review Form Component
+
+Inside of the `components/inidividualAirline` folder, we create the `ReviewForm.jsx` component that will deal with the review data.
+
+```javascript
+import React from 'react';
+
+const ReviewForm = (props) => {
+  return (
+    <div className="form">
+      <form onSubmit={(event) => props.onSubmitHandler(event)}>
+        <p>
+          Share your review about <strong>{props.attributes.name}</strong>
+        </p>
+        <div className="form-control">
+          <input
+            type="text"
+            name="title"
+            value={props.review.title}
+            placeholder="Review Title"
+            onChange={(event) => props.onChangeHandler(event)}
+          />
+        </div>
+        <div className="form-control">
+          <input
+            type="text"
+            name="description"
+            value={props.review.description}
+            placeholder="Review Description"
+            onChange={(event) => props.onChangeHandler(event)}
+          />
+        </div>
+        <div className="form-control">
+          <div className="rating-container">
+            <p className="rating-title-text">Rate This Airline</p>
+            [⭐⭐⭐⭐⭐]
+          </div>
+        </div>
+        <button type="submit">Send Your Review</button>
+      </form>
+    </div>
+  );
+};
+
+export default ReviewForm;
+```
+
+### Fast Review Form Explanation:
+
+The parent component (`ViewAirline.jsx`) will send to the ReviewForm some `props` that are:
+
+- The `attributes` object will be udes to render the name on the airline to make the page mor dynamic. `<strong>{props.attributes.name}</strong>`
+- The `onChangeHandler` function is listening for the changes in the input fields and sending it through a callback to the state placed in the parent component.
+- The `onSubmitHandler` function will listen to the `submit` event and will basically send the review to the backend through a `POST` call as we will see below, in the new version of `ViewAirline.jsx`.
+
+```javascript
+const ViewAirline = (props) => {
+  // ...
+  const [review, setReview] = useState({
+    /*...*/
+  });
+
+  // Sets the review state listening the onChange events from input fields
+  const onChangeHandler = ({ target }) => {
+    setReview({ ...review, [target.name]: target.value });
+  };
+
+  const onSubmitHandler = (event) => {
+    event.preventDefault();
+
+    /** It's a secret, user-specific token in all form submissions and
+     *   side-effect URLs to prevent Cross-Site Request Forgeries. */
+    const csrfToken = document.querySelector('[name=csrf-token]').content;
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+    axios.defaults.headers.common.accept = 'application/json';
+
+    /** Gets the airline id in order to associate id with the new review */
+    const airline_id = state.airline.data.id;
+
+    /** For now, it send the new review (using the POST method) to the endpoint
+     * and after receive the response data, debug */
+
+    axios
+      .post('/api/v1/reviews', { review, airline_id })
+      .then(({ data }) => {
+        debugger;
+      })
+      .catch(({ message }) => console.log(message));
+  };
+
+  // ...
+  return (
+    <div className="view-info-container">
+      {/* ... */}
+      {state.airline && (
+        <React.Fragment>
+          <div className="column right-column">
+            <AirlinesHeader
+              attributes={state.airline.data.attributes}
+              reviews={state.airline.included}
+            />
+          </div>
+          <div className="column left-column">
+            <ReviewForm
+              attributes={state.airline.data.attributes}
+              review={review}
+              onChangeHandler={onChangeHandler}
+              onSubmitHandler={onSubmitHandler}
+            />
+          </div>
+        </React.Fragment>
+      )}
+    </div>
+  );
+};
+export default ViewAirline;
+```
+
+## Updating the reviews controller
+
+In order to properly assign the reviews to their correspond airlines, in the `app/controllers/v1/api/reviews_controller.rb` file, we create the airline method that searches for an airline based in the `airline_id` value coming from the frontend (Refer to POST method inside of the `ViewAirline.jsx`) ...
+
+```ruby
+private
+
+def airline
+  @airline ||= Airline.find(params[:airline_id])
+end
+```
+
+... and we also change the `create method` as following. It basically calls the function we have created previously, that returns an airline so it sets its new review with the object sent from the client side.
+
+```ruby
+def create
+  # creates the new review into the airline found using the
+  # private def airline method
+  review = airline.reviews.new(review_params)
+#...
+```
+
+So far so good, but some files of the application are growing bigger and also becoming very confusing given the fact we are making the API calls, creating new functions etc in just one place. It is time to refactor some code. Let start diving the API class and their own place.
+
+First step is to create inside of a service directory, a file that will hold the airline API calls. For now we are just dealing with the GET request of all airlines.
+
+- `app/javascript/services/airlines.js`
+
+```javascript
+import axios from 'axios';
+const baseURL = '/api/v1/airlines';
+
+const getAllAirlines = (cancelToken) => {
+  const request = axios.get(baseURL, {
+    cancelToken,
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  return request.then((response) => response);
+};
+
+export default { getAllAirlines };
+```
+
+And we slightly change the `Airlines.jsx` component as following:
+
+```javascript
+// ...
+import airlineService from '../services/airlines';
+
+const Airlines = () => {
+  //...
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+    const cancelToken = source.token;
+    setState({
+      loading: true,
+      error: null,
+      airlines: null,
+    });
+
+    airlineService
+      .getAllAirlines(cancelToken)
+      .then((response) => {
+        setState({
+          loading: false,
+          error: null,
+          airlines: response.data.data,
+        });
+      })
+      .catch((error) => {
+        if (axios.isCancel(error)) {
+          setState({
+            loading: false,
+            error: error.message,
+            airlines: null,
+          });
+        }
+      });
+
+    return () => source.cancel();
+  }, [setState]);
+};
+//...
+```
