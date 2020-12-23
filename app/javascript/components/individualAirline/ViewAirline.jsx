@@ -1,13 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AirlinesHeader from './AirlinesHeader';
+import ReviewForm from './ReviewForm';
 
 const ViewAirline = (props) => {
   const [state, setState] = useState({
     loading: false,
     error: null,
-    data: null,
+    airline: null,
   });
+
+  const [review, setReview] = useState({ title: '', description: '' });
+
+  const onChangeHandler = ({ target }) => {
+    setReview({ ...review, [target.name]: target.value });
+  };
+
+  const onSubmitHandler = (event) => {
+    event.preventDefault();
+
+    /** It's a secret, user-specific token in all form submissions and
+     *** side-effect URLs to prevent Cross-Site Request Forgeries. */
+    const csrfToken = document.querySelector('[name=csrf-token]').content;
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+    axios.defaults.headers.common.accept = 'application/json';
+
+    const airline_id = state.airline.data.id;
+
+    axios
+      .post('/api/v1/reviews', { review, airline_id })
+      .then(({ data }) => {
+        debugger;
+      })
+      .catch(({ message }) => console.log(message));
+  };
 
   useEffect(() => {
     const slug = props.match.params.slug;
@@ -19,7 +45,7 @@ const ViewAirline = (props) => {
     setState({
       loading: true,
       error: null,
-      data: null,
+      airline: null,
     });
 
     axios
@@ -31,7 +57,7 @@ const ViewAirline = (props) => {
         setState({
           loading: false,
           error: null,
-          data,
+          airline: data,
         });
       })
       .catch(({ message }) => {
@@ -39,7 +65,7 @@ const ViewAirline = (props) => {
           setState({
             loading: false,
             error: message,
-            data: null,
+            airline: null,
           });
         }
       });
@@ -51,18 +77,24 @@ const ViewAirline = (props) => {
     <div className="view-info-container">
       {state.error && <div>{state.error}</div>}
       {state.loading && <div>{state.loading}</div>}
-      <div className="column right-column">
-        {state.data && (
-          <AirlinesHeader
-            attributes={state.data.data.attributes}
-            reviews={state.data.included}
-          />
-        )}
-        <div className="reviews"></div>
-      </div>
-      <div className="column left-column">
-        <div className="review-form">FORM</div>
-      </div>
+      {state.airline && (
+        <React.Fragment>
+          <div className="column right-column">
+            <AirlinesHeader
+              attributes={state.airline.data.attributes}
+              reviews={state.airline.included}
+            />
+          </div>
+          <div className="column left-column">
+            <ReviewForm
+              attributes={state.airline.data.attributes}
+              review={review}
+              onChangeHandler={onChangeHandler}
+              onSubmitHandler={onSubmitHandler}
+            />
+          </div>
+        </React.Fragment>
+      )}
     </div>
   );
 };
