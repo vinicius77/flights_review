@@ -20,6 +20,11 @@ const ViewAirline = (props) => {
   const [state, setState] = useState(initialState);
   const [review, setReview] = useState(reviewInitialState);
 
+  const setRating = (rate) => {
+    setReview({ ...review, score: rate });
+    console.log(review);
+  };
+
   const onChangeHandler = ({ target }) => {
     setReview({ ...review, [target.name]: target.value });
   };
@@ -101,6 +106,7 @@ const ViewAirline = (props) => {
               review={review}
               onChangeHandler={onChangeHandler}
               onSubmitHandler={onSubmitHandler}
+              setRating={setRating}
             />
           </div>
         </React.Fragment>
