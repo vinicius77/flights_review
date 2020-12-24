@@ -10,13 +10,14 @@ const reviewInitialState = {
   score: 0,
 };
 
-const ViewAirline = (props) => {
-  const [state, setState] = useState({
-    loading: false,
-    error: null,
-    airline: null,
-  });
+const initialState = {
+  loading: false,
+  error: null,
+  airline: null,
+};
 
+const ViewAirline = (props) => {
+  const [state, setState] = useState(initialState);
   const [review, setReview] = useState(reviewInitialState);
 
   const onChangeHandler = ({ target }) => {
