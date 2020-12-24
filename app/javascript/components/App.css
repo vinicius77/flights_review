@@ -143,3 +143,81 @@ section {
 .header-container .total-score {
   font-weight: bold;
 }
+
+/* ====================================
+
+          R E V I E W   F O R M
+
+** ====================================*/
+.review-container .form .form-control .rating-container {
+  text-align: center;
+  border-radius: 4px;
+  font-size: 25px;
+  padding: 30px 0px 10px 0;
+  border: 1px solid var(--light-grey);
+  background-color: white;
+}
+
+.review-container .form .form-control .rating-container .rating-title {
+}
+
+.review-container .form .form-control .rating-container .rating-options {
+  position: relative;
+  display: flex;
+  /** It is row reverse becasue when we hover it will start from left to the right
+  since the array starts from 5 and goes until 1 */
+  flex-direction: row-reverse;
+  justify-content: center;
+  background: white;
+}
+
+/** It hides the input field since we will style the label element */
+.review-container .form .form-control .rating-container .rating-options input {
+  display: none;
+}
+
+.review-container
+  .form
+  .form-control
+  .rating-container
+  .rating-options
+  input:checked
+  ~ label,
+.review-container
+  .form
+  .form-control
+  .rating-container
+  .rating-options
+  input:checked
+  ~ label
+  ~ label {
+  background-image: url(https://open-flights.s3.amazonaws.com/star-selected.svg);
+}
+
+.review-container
+  .form
+  .form-control
+  .rating-container
+  .rating-options
+  input:not(:checked)
+  ~ label:hover,
+.review-container
+  .form
+  .form-control
+  .rating-container
+  .rating-options
+  input:not(:checked)
+  ~ label:hover
+  ~ label {
+  background-image: url(https://open-flights.s3.amazonaws.com/star-hover.svg);
+}
+
+.review-container .form .form-control .rating-container .rating-options label {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  background-image: url(https://open-flights.s3.amazonaws.com/star-gray.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70%;
+}

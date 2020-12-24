@@ -1051,6 +1051,44 @@ const ViewAirline = (props) => {
   };
 ```
 
+### Implementing Rating into the Review Form Component
+
+Inside of `ReviewForm.jsx` we create the rating options elements ...
+
+```javascript
+const ratingOptions = [5, 4, 3, 2, 1].map((rate, index) => {
+  return (
+    <input
+      key={index}
+      type="radio"
+      name="rate"
+      id={`rate-${rate}`}
+      onChange={() => console.log(rate)}
+    />
+  );
+});
+```
+
+and use them as following
+
+```javascript
+const ReviewForm = (props) => {
+
+  //...
+  return (
+    <div className="form">
+    {/** .... */}
+      <div className="form-control">
+        <div className="rating-container">
+          <p className="rating-title-text">Rate This Airline</p>
+          <div className="rating-options">{ratingOptions}</div>
+        </div>
+      </div>
+      <button type="submit">Send Your Review</button>
+      {/** .... */}
+    </div>
+```
+
 ## Refactoring the API Call Methods
 
 So far so good, but some files of the application are growing bigger and also becoming very confusing given the fact we are making the API calls, creating new functions etc in just one place. It is time to refactor some code. Let start diving the API class and their own place.
