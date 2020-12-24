@@ -3,6 +3,13 @@ import axios from 'axios';
 import AirlinesHeader from './AirlinesHeader';
 import ReviewForm from './ReviewForm';
 
+const reviewInitialState = {
+  title: '',
+  description: '',
+  airline_id: '',
+  score: 0,
+};
+
 const ViewAirline = (props) => {
   const [state, setState] = useState({
     loading: false,
@@ -10,11 +17,7 @@ const ViewAirline = (props) => {
     airline: null,
   });
 
-  const [review, setReview] = useState({
-    title: '',
-    description: '',
-    airline_id: '',
-  });
+  const [review, setReview] = useState(reviewInitialState);
 
   const onChangeHandler = ({ target }) => {
     setReview({ ...review, [target.name]: target.value });
@@ -33,8 +36,10 @@ const ViewAirline = (props) => {
 
     axios
       .post('/api/v1/reviews', { review, airline_id })
-      .then(({ data }) => {
-        debugger;
+      .then((response) => {
+        const included = [...state.airline.included, response.data.data];
+        setState({ ...state, included });
+        setReview(reviewInitialState);
       })
       .catch(({ message }) => console.log(message));
   };

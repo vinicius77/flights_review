@@ -1028,6 +1028,31 @@ def create
 #...
 ```
 
+### Taking the data from the response we get from the API request and updating the values in the state
+
+We will take the review that was created and sent back in the response body, add it in the array of reviews, under the `included` key in the airlines state. It avoids making an additional request back to the API in order to update the state. On the `ViewAirlines.jsx` we updated this chunk of code :
+
+```javascript
+const ViewAirline = (props) => {
+  //...
+
+  const onSubmitHandler = (event) => {
+    event.preventDefault();
+
+    //...
+    axios
+      .post('/api/v1/reviews', { review, airline_id })
+      .then((response) => {
+        const included = [...state.airline.included, response.data.data];
+        setState({ ...state, included });
+        setReview(reviewInitialState);
+      })
+      .catch(({ message }) => console.log(message));
+  };
+```
+
+## Refactoring the API Call Methods
+
 So far so good, but some files of the application are growing bigger and also becoming very confusing given the fact we are making the API calls, creating new functions etc in just one place. It is time to refactor some code. Let start diving the API class and their own place.
 
 First step is to create inside of a service directory, a file that will hold the airline API calls. For now we are just dealing with the GET request of all airlines.
