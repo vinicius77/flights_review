@@ -280,5 +280,66 @@ section {
   background-position: center;
   background-size: 70%;
 }
-
 /** End - Review Rating */
+
+/* ====================================
+
+      R E V I E W  C O M P O N E N T 
+
+** ====================================*/
+.review-card {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 20px;
+  margin: 0px 20px 20px 0px;
+}
+
+.review-card .rating-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.review-card .rating-wrapper div.rating {
+  font-size: 23px;
+}
+
+.review-card .info p.title {
+  padding-top: 20px;
+  font-size: 22px;
+}
+
+.review-card .info p.description {
+  padding-bottom: 20px;
+  font-size: 19px;
+}
+
+/* ====================================
+
+      R A T I N G  C O M P O N E N T 
+
+** ====================================*/
+.star-container {
+  position: relative;
+  display: inline-block;
+  color: rgb(175, 175, 175);
+}
+
+.stars {
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  color: rgb(247, 247, 78);
+}
+
+/**
+  \f005 => starts
+  \0020 => spaces
+  */
+.star-container::before,
+.stars::before {
+  font-family: 'FontAwesome';
+  content: '\f005 \0020 \f005 \0020 \f005 \0020 \f005 \0020 \f005';
+}

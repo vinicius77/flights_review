@@ -1,4 +1,5 @@
 import React from 'react';
+import Rating from '../Rating/Rating';
 
 const Review = (props) => {
   const { title, description, score } = props.attributes;
@@ -6,7 +7,7 @@ const Review = (props) => {
   return (
     <div className="review-card">
       <div className="rating-wrapper">
-        <div className="rating">{score}</div>
+        <Rating score={score} />
       </div>
       <div className="info">
         <p className="title">{title}</p>

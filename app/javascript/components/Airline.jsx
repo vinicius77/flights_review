@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import Rating from './Rating/Rating';
 
 const Airline = ({ attributes }) => {
   return (
@@ -9,6 +10,7 @@ const Airline = ({ attributes }) => {
       </div>
       <div className="description">
         <p className="name">Name: {attributes.name}</p>
+        <Rating score={attributes.average_score} />
         <p className="score">Score: {attributes.average_score}</p>
         <div className="link-wrapper">
           <NavLink to={`/airlines/${attributes.slug}`}>View Airline</NavLink>

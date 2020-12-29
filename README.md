@@ -1091,6 +1091,15 @@ const ReviewForm = (props) => {
 
 ### CSS Styling for the Review Component not covered here
 
+On `app/views/layouts/application.html.erb` add:
+
+```html
+<link
+  href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+  rel="stylesheet"
+/>
+```
+
 ## Refactoring the API Call Methods
 
 So far so good, but some files of the application are growing bigger and also becoming very confusing given the fact we are making the API calls, creating new functions etc in just one place. It is time to refactor some code. Let start diving the API class and their own place.
