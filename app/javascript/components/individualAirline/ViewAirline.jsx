@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AirlinesHeader from './AirlinesHeader';
+import Review from './Review';
 import ReviewForm from './ReviewForm';
 
 const reviewInitialState = {
@@ -22,7 +23,6 @@ const ViewAirline = (props) => {
 
   const setRating = (rate) => {
     setReview({ ...review, score: rate });
-    console.log(review);
   };
 
   const onChangeHandler = ({ target }) => {
@@ -99,7 +99,11 @@ const ViewAirline = (props) => {
               attributes={state.airline.data.attributes}
               reviews={state.airline.included}
             />
+            {state.airline.included.map((review, index) => (
+              <Review key={index} attributes={review.attributes} />
+            ))}
           </div>
+
           <div className="column left-column">
             <ReviewForm
               attributes={state.airline.data.attributes}
