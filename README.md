@@ -1089,7 +1089,7 @@ const ReviewForm = (props) => {
     </div>
 ```
 
-### CSS Styling fro the Review Component not covered here
+### CSS Styling for the Review Component not covered here
 
 ## Refactoring the API Call Methods
 

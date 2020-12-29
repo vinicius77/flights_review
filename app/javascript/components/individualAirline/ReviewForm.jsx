@@ -23,9 +23,9 @@ const ReviewForm = (props) => {
     <div className="review-container">
       <div className="form">
         <form onSubmit={(event) => props.onSubmitHandler(event)}>
-          <p>
+          <h2>
             Share your review about <strong>{props.attributes.name}</strong>
-          </p>
+          </h2>
           <div className="form-control">
             <input
               type="text"

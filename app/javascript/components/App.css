@@ -149,6 +149,67 @@ section {
           R E V I E W   F O R M
 
 ** ====================================*/
+.review-container .form {
+  background-color: white;
+  padding: 20px;
+  height: 100vh;
+  padding-top: 60px;
+}
+
+.review-container .form button {
+  color: white;
+  width: 100%;
+  background-color: #0054a6;
+  border-radius: 4px;
+  padding: 12px;
+  margin-top: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: ease-in-out 0.1s;
+  border: 1px solid white;
+}
+
+.review-container .form button:hover {
+  background: white;
+  color: #0054a6;
+  border: 1px solid #0054a6;
+}
+
+.review-container .form form h2 {
+  padding: 20px;
+  font-size: 27px;
+  font-weight: bold;
+}
+
+.review-container .form .form-control {
+  border-radius: 4px;
+}
+
+.review-container .form .form-control input {
+  min-height: 50px;
+  width: 95%;
+}
+
+.review-container .form .form-control textarea {
+  width: 100%;
+  min-height: 80px;
+}
+
+.review-container .form .form-control input,
+.review-container .form .form-control textarea {
+  border-radius: 4px;
+  border: 1px solid #e6e6e6;
+  margin: 0px 0px 12px 0px;
+  padding: 12px;
+}
+
+/** Start - Review Rating */
+.review-container .form .form-control .rating-container p {
+  font-size: 23px;
+  padding-bottom: 20px;
+  font-weight: bold;
+}
+
 .review-container .form .form-control .rating-container {
   text-align: center;
   border-radius: 4px;
@@ -158,15 +219,13 @@ section {
   background-color: white;
 }
 
-.review-container .form .form-control .rating-container .rating-title {
-}
-
 .review-container .form .form-control .rating-container .rating-options {
   position: relative;
   display: flex;
   /** It is row reverse becasue when we hover it will start from left to the right
   since the array starts from 5 and goes until 1 */
   flex-direction: row-reverse;
+  margin-top: 12px;
   justify-content: center;
   background: white;
 }
@@ -221,3 +280,5 @@ section {
   background-position: center;
   background-size: 70%;
 }
+
+/** End - Review Rating */
