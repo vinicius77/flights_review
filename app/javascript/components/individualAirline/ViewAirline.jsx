@@ -3,6 +3,7 @@ import axios from 'axios';
 import AirlinesHeader from './AirlinesHeader';
 import Review from './Review';
 import ReviewForm from './ReviewForm';
+import airlineService from '../../services/reviews';
 
 const reviewInitialState = {
   title: '',
@@ -32,22 +33,16 @@ const ViewAirline = (props) => {
   const onSubmitHandler = (event) => {
     event.preventDefault();
 
-    /** It's a secret, user-specific token in all form submissions and
-     *** side-effect URLs to prevent Cross-Site Request Forgeries. */
-    const csrfToken = document.querySelector('[name=csrf-token]').content;
-    axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
-    axios.defaults.headers.common.accept = 'application/json';
-
     const airline_id = state.airline.data.id;
 
-    axios
-      .post('/api/v1/reviews', { review, airline_id })
+    airlineService
+      .createBlog({ review, airline_id })
       .then((response) => {
-        const included = [...state.airline.included, response.data.data];
+        const included = [...state.airline.included, response.data];
         setState({ ...state, included });
         setReview(reviewInitialState);
       })
-      .catch(({ message }) => console.log(message));
+      .catch((error) => setState({ ...state, error: error.message }));
   };
 
   useEffect(() => {

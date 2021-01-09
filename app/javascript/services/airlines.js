@@ -1,6 +1,7 @@
 import axios from 'axios';
 const baseURL = '/api/v1/airlines';
 
+/** GET /api/v1/airlines (All Airlines)*/
 const getAllAirlines = (cancelToken) => {
   const request = axios.get(baseURL, {
     cancelToken,
